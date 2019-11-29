@@ -10,3 +10,6 @@ build
 
 .DS_Store
 bin/
+.apt_generated/
+.apt_generated_tests/
+

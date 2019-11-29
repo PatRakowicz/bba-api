@@ -1,4 +1,4 @@
-package com.bba.bbaapi;
+package com.bba;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

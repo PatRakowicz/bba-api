@@ -1,4 +1,4 @@
-package com.bba.bbaapi;
+package com.bba;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

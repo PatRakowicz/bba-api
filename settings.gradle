@@ -1,4 +1,5 @@
 rootProject.name = 'bba-api'
 
+include 'bba-client'
 include 'bba-contacts'
 include 'bba-calendar'

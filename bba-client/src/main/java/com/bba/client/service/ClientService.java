@@ -13,10 +13,15 @@ import java.util.stream.Collectors;
 @Service
 public class ClientService {
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    private ClientMapper mapper = Mappers.getMapper(ClientMapper.class);
+    private final ClientMapper mapper;
+
+    @Autowired
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+        this.mapper = Mappers.getMapper(ClientMapper.class);
+    }
 
     public List<ClientDto> getClients(Integer accountId) {
         List<ClientEntity> list = clientRepository.findAllByAccountId(accountId);

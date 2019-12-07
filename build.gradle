@@ -22,8 +22,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.h2database:h2' // TODO replace with mysql
 	
-	implementation project(':bba-contacts')
-	implementation project(':bba-calendar')
+	implementation project(':bba-account')
+	implementation project(':bba-appointment')
+	implementation project(':bba-category')
+	implementation project(':bba-client')
+	implementation project(':bba-expense')
+	implementation project(':bba-income')
+	implementation project(':bba-product')
+	implementation project(':bba-vendor')
 	implementation project(':bba-client')
 
 
@@ -40,5 +46,6 @@ subprojects {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'java'
-    
+
+	bootJar.enabled = false
 }

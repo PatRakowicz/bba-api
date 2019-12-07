@@ -1,5 +1,11 @@
 rootProject.name = 'bba-api'
 
+include 'bba-account'
+include 'bba-appointment'
+include 'bba-category'
 include 'bba-client'
-include 'bba-contacts'
+include 'bba-expense'
+include 'bba-income'
+include 'bba-product'
+include 'bba-vendor'
 include 'bba-calendar'

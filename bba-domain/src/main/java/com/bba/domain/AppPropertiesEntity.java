@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class AppPropertiesEntity {
 
     @Id

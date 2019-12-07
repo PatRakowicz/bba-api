@@ -15,8 +15,6 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class SaleEntity {
 
     @Id
@@ -34,7 +32,7 @@ public class SaleEntity {
     private Integer txRefNumId;
 
     @Column(name = "TX_DATE")
-    private LocalDate TxDate;
+    private LocalDate txDate;
 
     @Column(name = "TAX")
     private BigDecimal tax;

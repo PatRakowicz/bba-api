@@ -20,15 +20,15 @@ public class CategoryEntity {
     @Column(name = "CATEGORY_ID")
     private Integer id;
 
-    @Column(name = "NAME", length = 64)
+    @Column(name = "NAME", length = 64, nullable = false)
     private String name;
 
-    @Column(name = "TYPE", length = 1)
+    @Column(name = "TYPE", length = 1, nullable = false)
     private String type;
 
-    @Column(name = "ACCOUNT_ID")
+    @Column(name = "ACCOUNT_ID", nullable = false)
     private Integer accountId;
 
-    @Column(name = "PARENT_ID", nullable = false)
+    @Column(name = "PARENT_ID")
     private Integer parentId;
 }

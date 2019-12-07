@@ -27,16 +27,16 @@ public class UserEntity {
     @Column(name = "ACTIVE", length = 1)
     private String active;
 
-    @Column(name = "LOGIN_NAME", length = 128)
+    @Column(name = "LOGIN_NAME", length = 128, nullable = false)
     private String loginName;
 
-    @Column(name = "LOGIN_PASS", length = 128)
+    @Column(name = "LOGIN_PASS", length = 128, nullable = false)
     private String loginPass;
 
     @Column(name = "LAST_LOGIN")
     private LocalDateTime lastLogin;
 
-    @Column(name = "LAST_IP", nullable = false, length = 128)
+    @Column(name = "LAST_IP", length = 128)
     private String lastIP;
 
     @PrePersist

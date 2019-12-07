@@ -25,6 +25,7 @@ dependencies {
 	implementation project(':bba-contacts')
 	implementation project(':bba-calendar')
 	implementation project(':bba-client')
+	implementation project(':bba-domain')
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

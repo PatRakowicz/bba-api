@@ -3,12 +3,11 @@ package com.bba.client.service;
 import com.bba.client.ClientDto;
 import com.bba.repositories.ClientRepository;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -17,7 +16,6 @@ public class ClientService {
 
     private final ClientMapper mapper;
 
-    @Autowired
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
         this.mapper = Mappers.getMapper(ClientMapper.class);
@@ -25,7 +23,13 @@ public class ClientService {
 
     public List<ClientDto> getClients(Integer accountId) {
         List<ClientEntity> list = clientRepository.findAllByAccountId(accountId);
-        return list.stream().map(mapper::mapDto).collect(Collectors.toList());
+        List<ClientDto> dtoList = new ArrayList<>();
+        for (ClientEntity clientEntity : list) {
+            ClientDto dto = mapper.mapDto(clientEntity);
+            dtoList.add(dto);
+        }
+        return dtoList;
+        //return list.stream().map(mapper::mapDto).collect(Collectors.toList());
     }
 
     public ClientDto getClient(Integer accountId, Integer clientId) {

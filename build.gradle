@@ -31,6 +31,7 @@ dependencies {
 	implementation project(':bba-product')
 	implementation project(':bba-vendor')
 	implementation project(':bba-client')
+	implementation project(':bba-domain')
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

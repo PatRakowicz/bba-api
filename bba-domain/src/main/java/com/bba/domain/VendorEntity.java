@@ -38,7 +38,7 @@ public class VendorEntity {
     @Column(name = "REP_NAME", length = 128)
     private String repName;
 
-    @Column(name = "REP_PHONE", length = 128)
+    @Column(name = "REP_PHONE", length = 16)
     private String repPhone;
 
     @Column(name = "ACCOUNT_ID", nullable = false)

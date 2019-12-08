@@ -29,7 +29,7 @@ public class SaleEntity {
     private String salesTax;
 
     @Column(name = "TX_REF_NUM", length = 1)
-    private Integer txRefNumId;
+    private Integer txRefNum;
 
     @Column(name = "TX_DATE")
     private LocalDate txDate;

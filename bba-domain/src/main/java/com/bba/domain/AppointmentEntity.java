@@ -21,7 +21,7 @@ public class AppointmentEntity {
     @Column(name = "APPOINTMENT_ID")
     private Integer id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "NAME", nullable = false, length = 64)
     private String name;
 
     @Column(name = "START_TIME", nullable = false)

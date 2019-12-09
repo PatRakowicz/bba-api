@@ -25,7 +25,7 @@ public class ProductEntity {
     @Column(name = "UPDATED", nullable = false)
     private LocalDateTime updated;
 
-    @Column(name = "ACTIVE", length = 1)
+    @Column(name = "ACTIVE", nullable = false, length = 1)
     private String active;
 
     @Column(name = "DESCRIPTION", nullable = false, length = 128)
@@ -34,7 +34,7 @@ public class ProductEntity {
     @Column(name = "PRICE", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "QUANTITY", length = 11)
+    @Column(name = "QUANTITY")
     private Integer quantity;
 
     @Column(name = "TAXABLE", nullable = false)

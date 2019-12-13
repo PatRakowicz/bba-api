@@ -1,4 +1,4 @@
-package com.bba.client.service;
+package com.bba.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

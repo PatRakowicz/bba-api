@@ -1,6 +1,7 @@
 package com.bba.client.service;
 
 import com.bba.client.ClientDto;
+import com.bba.domain.ClientEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

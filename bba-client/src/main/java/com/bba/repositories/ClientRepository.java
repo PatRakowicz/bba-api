@@ -1,6 +1,6 @@
 package com.bba.repositories;
 
-import com.bba.client.service.ClientEntity;
+import com.bba.domain.ClientEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

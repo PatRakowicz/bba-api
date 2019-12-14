@@ -1,6 +1,7 @@
 package com.bba.client.service;
 
 import com.bba.client.ClientDto;
+import com.bba.domain.ClientEntity;
 import com.bba.repositories.ClientRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;

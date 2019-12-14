@@ -1,8 +1,7 @@
 plugins {
+	id 'java'
 	id 'org.springframework.boot' version '2.1.10.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'io.freefair.lombok' version '4.1.5'
-	id 'java'
 }
 
 allprojects {
@@ -31,8 +30,6 @@ dependencies {
 	implementation project(':bba-product')
 	implementation project(':bba-vendor')
 	implementation project(':bba-client')
-	implementation project(':bba-domain')
-
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -43,10 +40,15 @@ dependencies {
 
 subprojects {
 
-	apply plugin: 'io.freefair.lombok'
+	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'java'
 
+	jar.enabled = true
 	bootJar.enabled = false
+
+	dependencies {
+		annotationProcessor 'org.projectlombok:lombok'
+		annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.1.Final'
+	}
 }

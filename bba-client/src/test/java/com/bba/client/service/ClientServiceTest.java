@@ -2,7 +2,7 @@ package com.bba.client.service;
 
 import com.bba.client.ClientDto;
 import com.bba.domain.ClientEntity;
-import com.bba.repositories.ClientRepository;
+import com.bba.client.repositories.ClientRepository;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;

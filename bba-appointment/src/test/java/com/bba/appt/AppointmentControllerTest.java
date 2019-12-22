@@ -49,13 +49,13 @@ public class AppointmentControllerTest {
     @Test
     public void testList() throws Exception {
         when(service.getList(any(), any(), any())).thenReturn(ImmutableList.of(appointment));
-        String jsonExpected = objectMapper.writeValueAsString(ImmutableList.of(appointment));
+        String jsonExpected = objectMapper.writeValueAsString(
+            AppointmentListDto.builder().result(ImmutableList.of(appointment)).build());
 
         mockMvc.perform(get("/v2/appts"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(content().json(jsonExpected));
 
         verify(service).getList(any(), any(), any());

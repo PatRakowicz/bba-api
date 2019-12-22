@@ -32,7 +32,7 @@ public class AppointmentService {
 
     public List<AppointmentDto> getList(Integer accountId, LocalDate dateFrom, LocalDate dateTo) {
         LocalDateTime start = LocalDateTime.of(dateFrom, LocalTime.of(0, 0));
-        LocalDateTime end = LocalDateTime.of(dateTo, LocalTime.of(0, 0));
+        LocalDateTime end = LocalDateTime.of(dateTo, LocalTime.of(23, 59));
         log.debug("list acct {} between {}-{}", accountId, start, end);
         List<AppointmentEntity> list = appointmentRepository.findAllByAccountIdAndStartTimeBetween(accountId, start, end);
         return list.stream().map(mapper::mapDto).collect(Collectors.toList());

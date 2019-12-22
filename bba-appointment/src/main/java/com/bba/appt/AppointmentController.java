@@ -19,8 +19,19 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public List<AppointmentDto> list() {
-        return service.getList(100, LocalDate.now(), LocalDate.now().plusDays(1));
+    public AppointmentListDto list() {
+        return list("w", LocalDate.now());
+    }
+
+    @GetMapping("/{period}/{date}")
+    public AppointmentListDto list(
+        @PathVariable(name = "period") String period,
+        @PathVariable(name = "date", required = false) LocalDate date) {
+        DatePeriodDto dates = DatePeriodUtil.calculateDates(period, date, false);
+        return AppointmentListDto.builder()
+            .datePeriod(dates)
+            .result(service.getList(100, dates.getStart(), dates.getEnd()))
+            .build();
     }
 
     @GetMapping("/{id}")

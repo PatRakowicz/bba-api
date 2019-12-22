@@ -1,16 +1,23 @@
 package com.bba.appt;
 
+import com.bba.appt.service.AppointmentService;
+import com.bba.domain.AppointmentEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -20,6 +27,11 @@ public class AppointmentControllerTest {
 
     @InjectMocks
     private AppointmentController controller;
+
+    @Mock
+    private AppointmentService service;
+    @Captor
+    private ArgumentCaptor<AppointmentDto> captor;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -36,6 +48,7 @@ public class AppointmentControllerTest {
 
     @Test
     public void testList() throws Exception {
+        when(service.getList(any(), any(), any())).thenReturn(ImmutableList.of(appointment));
         String jsonExpected = objectMapper.writeValueAsString(ImmutableList.of(appointment));
 
         mockMvc.perform(get("/v2/appts"))
@@ -44,10 +57,14 @@ public class AppointmentControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(content().json(jsonExpected));
+
+        verify(service).getList(any(), any(), any());
+        verifyNoMoreInteractions(service);
     }
 
     @Test
     public void testGet() throws Exception {
+        when(service.getAppointment(appointment.getId(), 100)).thenReturn(appointment);
         String jsonExpected = objectMapper.writeValueAsString(appointment);
 
         mockMvc.perform(get("/v2/appts/10"))
@@ -55,10 +72,14 @@ public class AppointmentControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json(jsonExpected));
+
+        verify(service).getAppointment(appointment.getId(), 100);
+        verifyNoMoreInteractions(service);
     }
 
     @Test
     public void testSave() throws Exception {
+        when(service.save(any(), any())).thenAnswer(invocation -> invocation.getArgument(0));
         String content = objectMapper.writeValueAsString(appointment);
 
         mockMvc.perform(
@@ -69,6 +90,9 @@ public class AppointmentControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json(content));
+
+        verify(service).save(any(), any());
+        verifyNoMoreInteractions(service);
     }
 
     @Test
@@ -81,5 +105,23 @@ public class AppointmentControllerTest {
                 .content(content))
             .andDo(print())
             .andExpect(status().isNoContent());
+
+        verify(service).update(any(), any());
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        String content = objectMapper.writeValueAsString(appointment);
+
+        mockMvc.perform(
+            delete("/v2/appts")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(service).delete(any(), any());
+        verifyNoMoreInteractions(service);
     }
 }

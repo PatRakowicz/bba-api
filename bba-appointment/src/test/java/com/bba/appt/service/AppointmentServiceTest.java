@@ -2,7 +2,7 @@ package com.bba.appt.service;
 
 import com.bba.appt.AppointmentDto;
 import com.bba.appt.repositories.AppointmentRepository;
-import com.bba.appt.repositories.ClientRepository;
+import com.bba.appt.repositories.ApptClientRepository;
 import com.bba.domain.AppointmentEntity;
 import com.bba.domain.ClientEntity;
 import com.google.common.collect.ImmutableList;
@@ -37,7 +37,7 @@ public class AppointmentServiceTest {
     @Mock
     private AppointmentRepository appointmentRepository;
     @Mock
-    private ClientRepository clientRepository;
+    private ApptClientRepository apptClientRepository;
 
     @Captor
     private ArgumentCaptor<AppointmentEntity> captor;
@@ -61,7 +61,7 @@ public class AppointmentServiceTest {
             .confirmed("N")
             .clientId(CLIENT_ID)
             .build();
-        when(clientRepository.findByIdAndAccountId(CLIENT_ID, ACCT_ID)).thenReturn(
+        when(apptClientRepository.findByIdAndAccountId(CLIENT_ID, ACCT_ID)).thenReturn(
             Optional.of(ClientEntity.builder().id(CLIENT_ID).name("clientName").phone("303-123-1234").build()));
     }
 
@@ -79,7 +79,7 @@ public class AppointmentServiceTest {
         assertEquals(APPT_ID, (int)list.get(0).getId());
         assertEquals("name", list.get(0).getName());
         verify(appointmentRepository).findAllByAccountIdAndStartTimeBetween(any(), any(), any());
-        verifyNoMoreInteractions(appointmentRepository, clientRepository);
+        verifyNoMoreInteractions(appointmentRepository, apptClientRepository);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class AppointmentServiceTest {
         assertEquals(APPT_ID, (int) dto.getId());
         assertEquals("name", dto.getName());
         verify(appointmentRepository).findByIdAndAccountId(any(), any());
-        verifyNoMoreInteractions(appointmentRepository, clientRepository);
+        verifyNoMoreInteractions(appointmentRepository, apptClientRepository);
     }
 
     @Test
@@ -114,8 +114,8 @@ public class AppointmentServiceTest {
         assertEquals(dto.getClient().getId(), savedEntity.getClientId());
         assertEquals(dto.getName(), savedEntity.getName());
         assertEquals(saved.getName(), dto.getName());
-        verify(clientRepository).findByIdAndAccountId(any(), any());
-        verifyNoMoreInteractions(appointmentRepository, clientRepository);
+        verify(apptClientRepository).findByIdAndAccountId(any(), any());
+        verifyNoMoreInteractions(appointmentRepository, apptClientRepository);
     }
 
     @Test
@@ -141,8 +141,8 @@ public class AppointmentServiceTest {
         assertEquals(dto.getName(), updatedEntity.getName());
         assertEquals(dto.getLength(), Integer.valueOf(updatedEntity.getLength()));
         assertEquals(updated.getName(), dto.getName());
-        verify(clientRepository).findByIdAndAccountId(any(), any());
-        verifyNoMoreInteractions(appointmentRepository, clientRepository);
+        verify(apptClientRepository).findByIdAndAccountId(any(), any());
+        verifyNoMoreInteractions(appointmentRepository, apptClientRepository);
     }
 
     @Test
@@ -154,6 +154,6 @@ public class AppointmentServiceTest {
 
         verify(appointmentRepository).findByIdAndAccountId(any(), any());
         verify(appointmentRepository).delete(any());
-        verifyNoMoreInteractions(appointmentRepository, clientRepository);
+        verifyNoMoreInteractions(appointmentRepository, apptClientRepository);
     }
 }

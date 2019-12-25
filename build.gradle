@@ -16,11 +16,14 @@ allprojects {
 
 dependencies {
 	// implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	// implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.projectlombok:lombok'
 	implementation 'com.h2database:h2' // TODO replace with mysql
 	
+	implementation project(':bba-domain')
 	implementation project(':bba-account')
 	implementation project(':bba-appointment')
 	implementation project(':bba-category')

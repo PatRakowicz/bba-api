@@ -2,7 +2,7 @@ package com.bba.appt.service;
 
 import com.bba.appt.AppointmentDto;
 import com.bba.appt.repositories.AppointmentRepository;
-import com.bba.appt.repositories.ClientRepository;
+import com.bba.appt.repositories.ApptClientRepository;
 import com.bba.domain.AppointmentEntity;
 import com.bba.domain.ClientEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +21,19 @@ import java.util.stream.Collectors;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final ClientRepository clientRepository;
+    private final ApptClientRepository apptClientRepository;
     private final AppointmentMapper mapper;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, ClientRepository clientRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, ApptClientRepository apptClientRepository) {
         this.appointmentRepository = appointmentRepository;
-        this.clientRepository = clientRepository;
+        this.apptClientRepository = apptClientRepository;
         this.mapper = Mappers.getMapper(AppointmentMapper.class);
     }
 
     public List<AppointmentDto> getList(Integer accountId, LocalDate dateFrom, LocalDate dateTo) {
         LocalDateTime start = LocalDateTime.of(dateFrom, LocalTime.of(0, 0));
         LocalDateTime end = LocalDateTime.of(dateTo, LocalTime.of(23, 59));
-        log.debug("list acct {} between {}-{}", accountId, start, end);
+        log.debug("list appts acct={} between {}-{}", accountId, start, end);
         List<AppointmentEntity> list = appointmentRepository.findAllByAccountIdAndStartTimeBetween(accountId, start, end);
         return list.stream().map(mapper::mapDto).collect(Collectors.toList());
     }
@@ -77,7 +77,7 @@ public class AppointmentService {
     }
 
     private ClientEntity findClient(AppointmentDto.ClientDto clientDto, Integer accountId) {
-        return clientRepository.findByIdAndAccountId(clientDto.getId(), accountId).orElseThrow(
+        return apptClientRepository.findByIdAndAccountId(clientDto.getId(), accountId).orElseThrow(
             () -> new RuntimeException("Client NOT FOUND: client=" + clientDto.getId() + ", acct=" + accountId));
     }
 }

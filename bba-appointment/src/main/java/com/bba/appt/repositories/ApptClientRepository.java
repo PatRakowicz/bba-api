@@ -5,7 +5,7 @@ import org.springframework.data.repository.Repository;
 
 import java.util.Optional;
 
-public interface ClientRepository extends Repository<ClientEntity, Integer> {
+public interface ApptClientRepository extends Repository<ClientEntity, Integer> {
 
     Optional<ClientEntity> findByIdAndAccountId(Integer clientId, Integer accountId);
 }

@@ -21,14 +21,14 @@ public class DatePeriodUtil {
     }
 
     private static DatePeriodDto calculateMonthlyPeriod(LocalDate date) {
-        log.debug("month for {}", date);
+        log.debug("calc 'month' for {}", date);
         LocalDate from = LocalDate.of(date.getYear(), date.getMonth(), 1);
         LocalDate to = LocalDate.of(date.getYear(), date.getMonth(), date.getMonth().maxLength());
         return DatePeriodDto.builder().period("m").start(from).end(to).build();
     }
 
     private static DatePeriodDto calculateWeeklyPeriod(LocalDate date, boolean firstDayOfWeekSunday) {
-        log.debug("week for {} {}", date, firstDayOfWeekSunday);
+        log.debug("calc 'week' for {}, bow {}", date, (firstDayOfWeekSunday ? "Sun" : "Mon"));
         int offset;
         if (firstDayOfWeekSunday) {
             offset = (date.getDayOfWeek() == DayOfWeek.SUNDAY) ? -7 : 0;

@@ -21,8 +21,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.projectlombok:lombok'
-	implementation 'com.h2database:h2' // TODO replace with mysql
-	
+	implementation 'com.h2database:h2' // for testing only
+	implementation 'mysql:mysql-connector-java' //, versions: 8.0.18 5.1.47
+
 	implementation project(':bba-domain')
 	implementation project(':bba-account')
 	implementation project(':bba-appointment')

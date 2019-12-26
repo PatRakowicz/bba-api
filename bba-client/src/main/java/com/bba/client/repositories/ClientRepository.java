@@ -1,4 +1,4 @@
-package com.bba.repositories;
+package com.bba.client.repositories;
 
 import com.bba.domain.ClientEntity;
 import org.springframework.data.repository.CrudRepository;

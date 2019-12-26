@@ -23,22 +23,23 @@ public class ClientService {
     }
 
     public List<ClientDto> getClients(Integer accountId) {
+        // TODO page this, 63k bytes for a list is a bit much.
         List<ClientEntity> list = clientRepository.findAllByAccountId(accountId);
         List<ClientDto> dtoList = new ArrayList<>();
         for (ClientEntity clientEntity : list) {
-            ClientDto dto = mapper.mapDto(clientEntity);
+            ClientDto dto = mapper.mapSlimDto(clientEntity);
             dtoList.add(dto);
         }
         return dtoList;
-        //return list.stream().map(mapper::mapDto).collect(Collectors.toList());
+        //return list.stream().map(mapper::mapSlimDto).collect(Collectors.toList());
     }
 
-    public ClientDto getClient(Integer accountId, Integer clientId) {
-        ClientEntity entity = getClientEntity(accountId, clientId);
+    public ClientDto getClient(Integer clientId, Integer accountId) {
+        ClientEntity entity = getClientEntity(clientId, accountId);
         return mapper.mapDto(entity);
     }
 
-    public ClientDto saveClient(Integer accountId, ClientDto dto) {
+    public ClientDto saveClient(ClientDto dto, Integer accountId) {
         ClientEntity entity = mapper.mapEntity(dto);
         entity.setAccountId(accountId);
         entity = clientRepository.save(entity);
@@ -46,20 +47,20 @@ public class ClientService {
     }
 
     @Transactional
-    public ClientDto updateClient(Integer accountId, ClientDto dto) {
-        ClientEntity entity = getClientEntity(accountId, dto.getId());
+    public ClientDto updateClient(ClientDto dto, Integer accountId) {
+        ClientEntity entity = getClientEntity(dto.getId(), accountId);
         entity = mapper.mapExisting(dto, entity); // TODO address
         entity = clientRepository.save(entity);
         return mapper.mapDto(entity);
     }
 
-    public void deleteClient(Integer accountId, Integer clientId) {
-        ClientEntity entity = getClientEntity(accountId, clientId);
-        entity.setStatus("D"); // soft delete
+    public void deleteClient(Integer clientId, Integer accountId) {
+        ClientEntity entity = getClientEntity(clientId, accountId);
+        entity.setStatus("I");
         clientRepository.save(entity);
     }
 
-    private ClientEntity getClientEntity(Integer accountId, Integer clientId) {
+    private ClientEntity getClientEntity(Integer clientId, Integer accountId) {
         return clientRepository.findByIdAndAccountId(clientId, accountId).orElseThrow(
             () -> new RuntimeException("client NOT_FOUND cid=" + clientId));
     }

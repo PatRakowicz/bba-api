@@ -27,6 +27,7 @@ public class ClientEntity {
     @Column(name = "CREATED", nullable = false)
     private LocalDateTime created;
 
+    // 'A'ctive/'I'nactive
     @Column(name = "STATUS", length = 1)
     private String status;
 

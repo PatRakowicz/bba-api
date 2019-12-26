@@ -22,7 +22,7 @@ public class BbaUserDetailsService implements UserDetailsService {
     private final SecUserRepository secUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public BbaUserDetailsService(SecUserRepository secUserRepository, PasswordEncoder passwordEncoder, @Value("spring.datasource.url") String dsUrl) {
+    public BbaUserDetailsService(SecUserRepository secUserRepository, PasswordEncoder passwordEncoder, @Value("${spring.datasource.url}") String dsUrl) {
         this.secUserRepository = secUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.useCrypto = dsUrl.toLowerCase().contains(":mysql:");

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -51,5 +52,14 @@ public class BbaUserDetails implements UserDetails {
             ", accountId=" + accountId +
             ", businessName='" + businessName + '\'' +
             '}';
+    }
+
+    public static BbaUserDetails getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof BbaUserDetails) {
+            return (BbaUserDetails) principal;
+        } else {
+            throw new RuntimeException("User must be authenticated: " + principal);
+        }
     }
 }

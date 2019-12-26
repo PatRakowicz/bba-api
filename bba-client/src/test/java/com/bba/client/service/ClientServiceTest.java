@@ -14,8 +14,7 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -41,7 +40,7 @@ public class ClientServiceTest {
 
     @Test
     public void getClients() {
-        ClientEntity entity = ClientEntity.builder().id(CLIENT_ID).name("name").phone("303").build();
+        ClientEntity entity = ClientEntity.builder().id(CLIENT_ID).name("name").phone("303").occupation("test").build();
         List<ClientEntity> list = ImmutableList.of(entity);
         when(clientRepository.findAllByAccountId(ACC_ID)).thenReturn(list);
 
@@ -53,21 +52,23 @@ public class ClientServiceTest {
         assertEquals(entity.getId(), result.get(0).getId());
         assertEquals(entity.getName(), result.get(0).getName());
         assertEquals(entity.getPhone(), result.get(0).getPhone());
+        assertNull(result.get(0).getOccupation());
         verify(clientRepository).findAllByAccountId(any());
         verifyNoMoreInteractions(clientRepository);
     }
 
     @Test
     public void getClient() {
-        ClientEntity entity = ClientEntity.builder().id(CLIENT_ID).name("name").phone("303").build();
+        ClientEntity entity = ClientEntity.builder().id(CLIENT_ID).name("name").phone("303").occupation("test").build();
         when(clientRepository.findByIdAndAccountId(CLIENT_ID, ACC_ID)).thenReturn(Optional.of(entity));
 
-        ClientDto result = service.getClient(ACC_ID, CLIENT_ID);
+        ClientDto result = service.getClient(CLIENT_ID, ACC_ID);
 
         assertNotNull(result);
         assertEquals(entity.getId(), result.getId());
         assertEquals(entity.getName(), result.getName());
         assertEquals(entity.getPhone(), result.getPhone());
+        assertEquals(entity.getOccupation(), result.getOccupation());
         verify(clientRepository).findByIdAndAccountId(any(), any());
         verifyNoMoreInteractions(clientRepository);
     }
@@ -77,7 +78,7 @@ public class ClientServiceTest {
         ClientDto dto = ClientDto.builder().name("name").phone("303").build();
         when(clientRepository.save(any())).thenAnswer(invocation -> invocation.getArguments()[0]);
 
-        ClientDto result = service.saveClient(ACC_ID, dto);
+        ClientDto result = service.saveClient(dto, ACC_ID);
 
         assertNotNull(result);
         assertEquals(dto.getName(), result.getName());
@@ -97,7 +98,7 @@ public class ClientServiceTest {
         when(clientRepository.save(any())).thenAnswer(invocation -> invocation.getArguments()[0]);
         ClientDto dto = ClientDto.builder().id(CLIENT_ID).name("name1").phone("304").build();
 
-        ClientDto result = service.updateClient(ACC_ID, dto);
+        ClientDto result = service.updateClient(dto, ACC_ID);
 
         assertNotNull(result);
         assertEquals(dto.getName(), result.getName());
@@ -116,12 +117,12 @@ public class ClientServiceTest {
         ClientEntity entity = ClientEntity.builder().id(CLIENT_ID).name("name").phone("303").build();
         when(clientRepository.findByIdAndAccountId(CLIENT_ID, ACC_ID)).thenReturn(Optional.of(entity));
 
-        service.deleteClient(ACC_ID, CLIENT_ID);
+        service.deleteClient(CLIENT_ID, ACC_ID);
 
         verify(clientRepository).save(captor.capture());
         ClientEntity saved = captor.getValue();
         assertNotNull(saved);
-        assertEquals("D", saved.getStatus());
+        assertEquals("I", saved.getStatus());
         verify(clientRepository).findByIdAndAccountId(CLIENT_ID, ACC_ID);
         verifyNoMoreInteractions(clientRepository);
     }

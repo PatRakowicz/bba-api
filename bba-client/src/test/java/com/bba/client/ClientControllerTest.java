@@ -1,6 +1,7 @@
 package com.bba.client;
 
 import com.bba.client.service.ClientService;
+import com.bba.security.BbaUserDetails;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
@@ -10,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -23,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClientControllerTest {
 
     private static final Integer ACCT_ID = 1;
+    private static final Integer CLIENT_ID = 10;
 
     @InjectMocks
     private ClientController controller;
@@ -41,7 +46,13 @@ public class ClientControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(Include.NON_NULL);
-        client = ClientDto.builder().id(1).name("test").phone("303-123-1234").build();
+        client = ClientDto.builder().id(CLIENT_ID).name("test").phone("303-123-1234").build();
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(BbaUserDetails.builder().accountId(ACCT_ID).build());
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -62,10 +73,10 @@ public class ClientControllerTest {
 
     @Test
     public void testGet() throws Exception {
-        when(clientService.getClient(ACCT_ID, 10)).thenReturn(client);
+        when(clientService.getClient(CLIENT_ID, ACCT_ID)).thenReturn(client);
         String jsonExpected = objectMapper.writeValueAsString(client);
 
-        mockMvc.perform(get("/v2/clients/10"))
+        mockMvc.perform(get("/v2/clients/" + CLIENT_ID))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -77,7 +88,7 @@ public class ClientControllerTest {
 
     @Test
     public void testSave() throws Exception {
-        when(clientService.saveClient(eq(ACCT_ID), any(ClientDto.class))).thenAnswer(invocation -> invocation.getArguments()[1]);
+        when(clientService.saveClient(any(ClientDto.class), eq(ACCT_ID))).thenAnswer(invocation -> invocation.getArguments()[0]);
         String content = objectMapper.writeValueAsString(client);
 
         mockMvc.perform(
@@ -89,13 +100,13 @@ public class ClientControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json(content));
 
-        verify(clientService).saveClient(anyInt(), any(ClientDto.class));
+        verify(clientService).saveClient(any(ClientDto.class), anyInt());
         verifyNoMoreInteractions(clientService);
     }
 
     @Test
     public void testUpdate() throws Exception {
-        when(clientService.updateClient(eq(ACCT_ID), any(ClientDto.class))).thenAnswer(invocation -> invocation.getArguments()[1]);
+        when(clientService.updateClient(any(ClientDto.class), eq(ACCT_ID))).thenAnswer(invocation -> invocation.getArguments()[0]);
         String content = objectMapper.writeValueAsString(client);
 
         mockMvc.perform(
@@ -105,7 +116,7 @@ public class ClientControllerTest {
             .andDo(print())
             .andExpect(status().isNoContent());
 
-        verify(clientService).updateClient(any(), any(ClientDto.class));
+        verify(clientService).updateClient(any(ClientDto.class), anyInt());
         verifyNoMoreInteractions(clientService);
     }
 }

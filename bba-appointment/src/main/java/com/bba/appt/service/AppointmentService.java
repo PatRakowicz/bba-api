@@ -31,8 +31,8 @@ public class AppointmentService {
     }
 
     public List<AppointmentDto> getList(Integer accountId, LocalDate dateFrom, LocalDate dateTo) {
-        LocalDateTime start = LocalDateTime.of(dateFrom, LocalTime.of(0, 0));
-        LocalDateTime end = LocalDateTime.of(dateTo, LocalTime.of(23, 59));
+        LocalDateTime start = dateFrom.atStartOfDay();
+        LocalDateTime end = dateTo.atTime(LocalTime.MAX);
         log.debug("list appts acct={} between {}-{}", accountId, start, end);
         List<AppointmentEntity> list = appointmentRepository.findAllByAccountIdAndStartTimeBetween(accountId, start, end);
         return list.stream().map(mapper::mapDto).collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentDto save(AppointmentDto dto, Integer accountId) {
         AppointmentEntity entity = mapper.mapEntity(dto);
-        ClientEntity clientEntity = findClient(dto.getClient(), accountId);
+        ClientEntity clientEntity = findClient(dto.getCid(), accountId);
         entity.setAccountId(accountId);
         entity.setClientId(clientEntity.getId());
         // TODO - format appt-.name from the client
@@ -57,7 +57,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentDto update(AppointmentDto dto, Integer accountId) {
         AppointmentEntity existing = findAppointment(accountId, dto.getId());
-        ClientEntity clientEntity = findClient(dto.getClient(), accountId);
+        ClientEntity clientEntity = findClient(dto.getCid(), accountId);
         AppointmentEntity entity = mapper.mapExisting(dto, existing);
         entity.setClientId(clientEntity.getId());
         // TODO - format appt-.name from the client
@@ -76,8 +76,8 @@ public class AppointmentService {
             () -> new RuntimeException("Appointment NOT FOUND: appt=" + appointmentId + ", acct=" + accountId));
     }
 
-    private ClientEntity findClient(AppointmentDto.ClientDto clientDto, Integer accountId) {
-        return apptClientRepository.findByIdAndAccountId(clientDto.getId(), accountId).orElseThrow(
-            () -> new RuntimeException("Client NOT FOUND: client=" + clientDto.getId() + ", acct=" + accountId));
+    private ClientEntity findClient(Integer clientId, Integer accountId) {
+        return apptClientRepository.findByIdAndAccountId(clientId, accountId).orElseThrow(
+            () -> new RuntimeException("Client NOT FOUND: client=" + clientId + ", acct=" + accountId));
     }
 }

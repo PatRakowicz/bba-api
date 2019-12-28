@@ -11,21 +11,28 @@ import org.mapstruct.Mappings;
 public interface AppointmentMapper {
 
     @Mappings({
-        @Mapping(target = "client.id", source = "clientId"),
-        @Mapping(target = "client.name", ignore = true),
-        @Mapping(target = "client.phone", ignore = true)
+        @Mapping(target = "cid", source = "clientId"),
+        @Mapping(target = "conf", source = "confirmed"),
+        @Mapping(target = "len", source = "length"),
+        @Mapping(target = "start", source = "startTime")
     })
     AppointmentDto mapDto(AppointmentEntity entity);
 
     @Mappings({
-        @Mapping(target = "clientId", source = "client.id"),
-        @Mapping(target = "accountId", ignore = true)
+        @Mapping(target = "accountId", ignore = true),
+        @Mapping(target = "clientId", source = "cid"),
+        @Mapping(target = "confirmed", ignore = true),
+        @Mapping(target = "length", source = "len"),
+        @Mapping(target = "startTime", source = "start")
     })
     AppointmentEntity mapEntity(AppointmentDto dto);
 
     @Mappings({
         @Mapping(target = "accountId", expression = "java(entity.getAccountId())"),
-        @Mapping(target = "clientId", source = "client.id")
+        @Mapping(target = "clientId", source = "cid"),
+        @Mapping(target = "confirmed", expression = "java(entity.getConfirmed())"),
+        @Mapping(target = "length", source = "len"),
+        @Mapping(target = "startTime", source = "start")
     })
     AppointmentEntity mapExisting(AppointmentDto dto, @MappingTarget AppointmentEntity entity);
 }

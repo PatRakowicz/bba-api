@@ -56,7 +56,7 @@ public class AppointmentControllerTest {
         appointment = AppointmentDto.builder()
             .id(10)
             .name("name")
-            .startTime(LocalDateTime.of(2019, 12, 27, 9, 0, 0))
+            .start(LocalDateTime.of(2019, 12, 27, 9, 0, 0))
             .build();
 
         BbaUserDetails userDetails = BbaUserDetails.builder()
@@ -77,6 +77,22 @@ public class AppointmentControllerTest {
             AppointmentListDto.builder().result(ImmutableList.of(appointment)).build());
 
         mockMvc.perform(get("/v2/appts"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json(jsonExpected));
+
+        verify(service).getList(any(), any(), any());
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void testListMonthDated() throws Exception {
+        when(service.getList(any(), any(), any())).thenReturn(ImmutableList.of(appointment));
+        String jsonExpected = objectMapper.writeValueAsString(
+            AppointmentListDto.builder().result(ImmutableList.of(appointment)).build());
+
+        mockMvc.perform(get("/v2/appts/m/2019-12-28"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))

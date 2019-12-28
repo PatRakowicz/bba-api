@@ -3,6 +3,7 @@ package com.bba.appt;
 import com.bba.appt.service.AppointmentService;
 import com.bba.security.BbaUserDetails;
 import com.google.common.collect.ImmutableList;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class AppointmentController {
     @GetMapping("/{period}/{date}")
     public AppointmentListDto list(
         @PathVariable(name = "period") String period,
-        @PathVariable(name = "date", required = false) LocalDate date) {
+        @PathVariable(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         DatePeriodDto dates = DatePeriodUtil.calculateDates(period, date, false);
         return AppointmentListDto.builder()
             .datePeriod(dates)

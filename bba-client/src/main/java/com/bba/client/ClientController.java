@@ -1,6 +1,7 @@
 package com.bba.client;
 
 import com.bba.client.service.ClientService;
+import com.bba.security.BbaUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,22 +19,23 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDto> list() {
-        return clientService.getClients(1);
+        return clientService.getClients(BbaUserDetails.getCurrentUser().getAccountId());
     }
 
     @GetMapping("/{id}")
     public ClientDto get(@PathVariable("id") Integer clientId) {
-        return clientService.getClient(1, clientId);
+        return clientService.getClient(clientId, BbaUserDetails.getCurrentUser().getAccountId());
     }
 
     @PostMapping
     public ClientDto save(@RequestBody ClientDto client) {
-        return clientService.saveClient(1, client);
+        return clientService.saveClient(client, BbaUserDetails.getCurrentUser().getAccountId());
     }
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void update(@RequestBody ClientDto client) {
-        clientService.updateClient(1, client);
+        clientService.updateClient(client, BbaUserDetails.getCurrentUser().getAccountId());
     }
+
 }

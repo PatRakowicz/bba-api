@@ -4,6 +4,7 @@ import com.bba.domain.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 public interface SecUserRepository extends CrudRepository<UserEntity, Integer> {
@@ -28,10 +29,10 @@ public interface SecUserRepository extends CrudRepository<UserEntity, Integer> {
     }
 
     @Query(nativeQuery = true,
-        value = "select aes_decrypt(unhex(:value,:key)) as decryted from dual")
-    String decrypt(String value, String key);
+        value = "select aes_decrypt(unhex(:value),:key) as decryted from dual")
+    byte[] decrypt(String value, String key);
 
     default String decrypt(String value) {
-        return decrypt(value, KPS);
+        return new String(decrypt(value, KPS), Charset.defaultCharset());
     }
 }

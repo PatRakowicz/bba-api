@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AppointmentMapperTest {
 
@@ -30,12 +31,12 @@ public class AppointmentMapperTest {
         AppointmentDto dto = mapper.mapDto(entity);
 
         assertEquals(entity.getId(), dto.getId());
-        assertEquals(entity.getClientId(), dto.getClient().getId());
-        assertEquals(entity.getConfirmed(), dto.getConfirmed());
-        assertEquals(entity.getLength(), String.valueOf(dto.getLength()));
+        assertEquals(entity.getClientId(), dto.getCid());
+        assertEquals(entity.getConfirmed(), dto.getConf());
+        assertEquals(entity.getLength(), String.valueOf(dto.getLen()));
         assertEquals(entity.getName(), dto.getName());
         assertEquals(entity.getNote(), dto.getNote());
-        assertEquals(entity.getStartTime(), dto.getStartTime());
+        assertEquals(entity.getStartTime(), dto.getStart());
         assertEquals(entity.getSubject(), dto.getSubject());
     }
 
@@ -43,28 +44,24 @@ public class AppointmentMapperTest {
     public void mapEntity() {
         AppointmentDto dto = AppointmentDto.builder()
             .id(1)
-            .client(AppointmentDto.ClientDto.builder()
-                .id(11)
-                .name("name")
-                .phone("3031231234")
-                .build())
-            .confirmed("N")
-            .length(120)
+            .cid(11)
+            .conf("N")
+            .len(120)
             .name("Client S (303) 123-1234")
             .note("hc")
-            .startTime(LocalDateTime.now())
+            .start(LocalDateTime.now())
             .subject("subject") // null in current impl
             .build();
 
         AppointmentEntity entity = mapper.mapEntity(dto);
 
         assertEquals(dto.getId(), entity.getId());
-        assertEquals(dto.getClient().getId(), entity.getClientId());
-        assertEquals(dto.getConfirmed(), entity.getConfirmed());
-        assertEquals(dto.getLength(), Integer.valueOf(entity.getLength()));
+        assertEquals(dto.getCid(), entity.getClientId());
+        assertNull(entity.getConfirmed());
+        assertEquals(dto.getLen(), Integer.valueOf(entity.getLength()));
         assertEquals(dto.getName(), entity.getName());
         assertEquals(dto.getNote(), entity.getNote());
-        assertEquals(dto.getStartTime(), entity.getStartTime());
+        assertEquals(dto.getStart(), entity.getStartTime());
         assertEquals(dto.getSubject(), entity.getSubject());
     }
 
@@ -72,30 +69,26 @@ public class AppointmentMapperTest {
     public void mapExisting() {
         AppointmentDto dto = AppointmentDto.builder()
             .id(1)
-            .client(AppointmentDto.ClientDto.builder()
-                .id(11)
-                .name("name")
-                .phone("3031231234")
-                .build())
-            .confirmed("N")
-            .length(120)
+            .cid(11)
+            .conf("N")
+            .len(120)
             .name("Client S (303) 123-1234")
             .note("hc")
-            .startTime(LocalDateTime.now())
+            .start(LocalDateTime.now())
             .subject("subject") // null in current impl
             .build();
 
-        AppointmentEntity existing = AppointmentEntity.builder().accountId(22).build();
+        AppointmentEntity existing = AppointmentEntity.builder().accountId(22).confirmed("N").build();
         AppointmentEntity entity = mapper.mapExisting(dto, existing);
 
         assertEquals(existing.getAccountId(), entity.getAccountId());
         assertEquals(dto.getId(), entity.getId());
-        assertEquals(dto.getClient().getId(), entity.getClientId());
-        assertEquals(dto.getConfirmed(), entity.getConfirmed());
-        assertEquals(dto.getLength(), Integer.valueOf(entity.getLength()));
+        assertEquals(dto.getCid(), entity.getClientId());
+        assertEquals(dto.getConf(), entity.getConfirmed());
+        assertEquals(dto.getLen(), Integer.valueOf(entity.getLength()));
         assertEquals(dto.getName(), entity.getName());
         assertEquals(dto.getNote(), entity.getNote());
-        assertEquals(dto.getStartTime(), entity.getStartTime());
+        assertEquals(dto.getStart(), entity.getStartTime());
         assertEquals(dto.getSubject(), entity.getSubject());
     }
 }

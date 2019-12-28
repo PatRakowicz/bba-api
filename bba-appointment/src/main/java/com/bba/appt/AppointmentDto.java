@@ -15,22 +15,11 @@ public class AppointmentDto {
 
     private Integer id;
     private String name;
-    private LocalDateTime startTime;
-    private Integer length;
+    private LocalDateTime start;
+    private Integer len;
     private String subject;
     private String note;
-    private String confirmed;
+    private String conf;
+    private Integer cid;
 
-    private ClientDto client;
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ClientDto {
-
-        private Integer id;
-        private String name;
-        private String phone;
-    }
 }

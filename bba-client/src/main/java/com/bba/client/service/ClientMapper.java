@@ -18,6 +18,19 @@ public interface ClientMapper {
     ClientDto mapDto(ClientEntity entity);
 
     @Mappings({
+        @Mapping(target = "lastName", source = "lname"),
+        @Mapping(target = "created", ignore = true),
+        @Mapping(target = "homePhone", ignore = true),
+        @Mapping(target = "workPhone", ignore = true),
+        @Mapping(target = "email", ignore = true),
+        @Mapping(target = "gender", ignore = true),
+        @Mapping(target = "birthdate", ignore = true),
+        @Mapping(target = "occupation", ignore = true),
+        @Mapping(target = "family", ignore = true)
+    })
+    ClientDto mapSlimDto(ClientEntity entity);
+
+    @Mappings({
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "accountId", ignore = true),
         @Mapping(target = "addressId", ignore = true),

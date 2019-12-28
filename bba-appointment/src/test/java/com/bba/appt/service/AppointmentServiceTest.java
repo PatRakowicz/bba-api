@@ -100,7 +100,7 @@ public class AppointmentServiceTest {
     public void testSave() {
         AppointmentDto dto = AppointmentDto.builder()
             .name("name")
-            .client(AppointmentDto.ClientDto.builder().id(CLIENT_ID).build())
+            .cid(CLIENT_ID)
             .build();
         when(appointmentRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -111,7 +111,7 @@ public class AppointmentServiceTest {
         AppointmentEntity savedEntity = captor.getValue();
         assertNotNull(savedEntity);
         assertEquals(ACCT_ID, (int) savedEntity.getAccountId());
-        assertEquals(dto.getClient().getId(), savedEntity.getClientId());
+        assertEquals(dto.getCid(), savedEntity.getClientId());
         assertEquals(dto.getName(), savedEntity.getName());
         assertEquals(saved.getName(), dto.getName());
         verify(apptClientRepository).findByIdAndAccountId(any(), any());
@@ -123,8 +123,8 @@ public class AppointmentServiceTest {
         AppointmentDto dto = AppointmentDto.builder()
             .id(APPT_ID)
             .name("nameUpdated")
-            .length(240)
-            .client(AppointmentDto.ClientDto.builder().id(CLIENT_ID).build())
+            .len(240)
+            .cid(CLIENT_ID)
             .build();
         when(appointmentRepository.findByIdAndAccountId(APPT_ID, ACCT_ID))
             .thenReturn(Optional.of(entity));
@@ -137,9 +137,9 @@ public class AppointmentServiceTest {
         AppointmentEntity updatedEntity = captor.getValue();
         assertNotNull(updatedEntity);
         assertEquals(ACCT_ID, (int) updatedEntity.getAccountId());
-        assertEquals(dto.getClient().getId(), updatedEntity.getClientId());
+        assertEquals(dto.getCid(), updatedEntity.getClientId());
         assertEquals(dto.getName(), updatedEntity.getName());
-        assertEquals(dto.getLength(), Integer.valueOf(updatedEntity.getLength()));
+        assertEquals(dto.getLen(), Integer.valueOf(updatedEntity.getLength()));
         assertEquals(updated.getName(), dto.getName());
         verify(apptClientRepository).findByIdAndAccountId(any(), any());
         verifyNoMoreInteractions(appointmentRepository, apptClientRepository);

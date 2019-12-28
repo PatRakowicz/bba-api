@@ -55,6 +55,45 @@ public class ClientMapperTest {
     }
 
     @Test
+    public void testMapSlimDto() {
+        ClientEntity entity = ClientEntity.builder()
+            .id(1)
+            .accountId(2)
+            .addressId(3)
+            .name("name")
+            .lname("lname")
+            .birthdate("2019-01-01")
+            .created(LocalDateTime.now())
+            .email("test@test.com")
+            .phone("303-123-1234")
+            .wphone("303-123-1234")
+            .hphone("303-123-1234")
+            .status("A")
+            .gender("M")
+            .family("family")
+            .occupation("occupation")
+            .picUrl("picUrl")
+            .xrefid("xrefid")
+            .build();
+        ClientDto dto = mapper.mapSlimDto(entity);
+
+        assertEquals(entity.getId(), dto.getId());
+        assertEquals(entity.getName(), dto.getName());
+        assertEquals(entity.getLname(), dto.getLastName());
+        assertEquals(entity.getPhone(), dto.getPhone());
+        assertEquals(entity.getStatus(), dto.getStatus());
+
+        assertNull(dto.getBirthdate());
+        assertNull(dto.getCreated());
+        assertNull(dto.getEmail());
+        assertNull(dto.getWorkPhone());
+        assertNull(dto.getHomePhone());
+        assertNull(dto.getGender());
+        assertNull(dto.getFamily());
+        assertNull(dto.getOccupation());
+    }
+
+    @Test
     public void testMapEntity() {
         ClientDto dto = ClientDto.builder()
             .id(1)

@@ -4,8 +4,10 @@ spring:
     name: "bba-api"
   main:
     banner-mode: "off"
+  mvc:
+    favicon.enabled: false
   datasource:
-    url: "jdbc:mysql://localhost:3306/bba"
+    url: "jdbc:mysql://localhost:3306/bba?useLegacyDatetimeCode=false&serverTimezone=US/Mountain"
     username: bba
     password: bba
   jpa:

@@ -1,5 +1,6 @@
 package com.bba.security;
 
+import com.bba.domain.SettingsEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,10 +23,17 @@ public class BbaUserDetailsService implements UserDetailsService {
 
     private final boolean useCrypto;
     private final SecUserRepository secUserRepository;
+    private final SecSettingsRepository secSettingsRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public BbaUserDetailsService(SecUserRepository secUserRepository, PasswordEncoder passwordEncoder, @Value("${spring.datasource.url}") String dsUrl) {
+    public BbaUserDetailsService(
+        SecUserRepository secUserRepository,
+        SecSettingsRepository secSettingsRepository,
+        PasswordEncoder passwordEncoder,
+        @Value("${spring.datasource.url}") String dsUrl
+    ) {
         this.secUserRepository = secUserRepository;
+        this.secSettingsRepository = secSettingsRepository;
         this.passwordEncoder = passwordEncoder;
         this.useCrypto = dsUrl.toLowerCase().contains(":mysql:");
     }
@@ -39,17 +49,21 @@ public class BbaUserDetailsService implements UserDetailsService {
         if (useCrypto) { // H2 fails as it does not have AES_DECRYPT function
             password = secUserRepository.decrypt(secUserAccount.getUser().getLoginPass());
         }
+        Map<String, String> settings = secSettingsRepository.findAllByAccountId(secUserAccount.getAccount().getId())
+            .stream().collect(Collectors.toMap(SettingsEntity::getKey, SettingsEntity::getVal));
 
+        // jpa/hibernate will flash/save these automatically
         secUserAccount.getUser().setLastIP(remoteHost);
         secUserAccount.getUser().setLastLogin(LocalDateTime.now());
 
         return BbaUserDetails.builder()
+            .userId(secUserAccount.getUser().getId())
+            .accountId(secUserAccount.getAccount().getId())
             .username(secUserAccount.getUser().getLoginName())
             .password(passwordEncoder.encode(password))
             .authority(new SimpleGrantedAuthority("ROLE_USER"))
-            .accountId(secUserAccount.getAccount().getId())
             .businessName(secUserAccount.getAccount().getBusinessName())
-            .userId(secUserAccount.getUser().getId())
+            .settings(settings)
             .build();
     }
 }

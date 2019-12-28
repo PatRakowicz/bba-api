@@ -4,6 +4,7 @@ import com.bba.appt.service.AppointmentService;
 import com.bba.security.BbaUserDetails;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,11 +13,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -45,15 +49,24 @@ public class AppointmentControllerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        appointment = AppointmentDto.builder().id(10).name("name").build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setMessageConverters(customMappingJackson2HttpMessageConverter())
+            .build();
+        objectMapper = customMappingJackson2HttpMessageConverter().getObjectMapper();
+        appointment = AppointmentDto.builder()
+            .id(10)
+            .name("name")
+            .startTime(LocalDateTime.of(2019, 12, 27, 9, 0, 0))
+            .build();
 
+        BbaUserDetails userDetails = BbaUserDetails.builder()
+            .accountId(ACCT_ID)
+            .setting("timezone", "US/Eastern")
+            .build();
         SecurityContext securityContext = mock(SecurityContext.class);
         Authentication authentication = mock(Authentication.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(BbaUserDetails.builder().accountId(ACCT_ID).build());
+        when(authentication.getPrincipal()).thenReturn(userDetails);
         SecurityContextHolder.setContext(securityContext);
     }
 
@@ -134,5 +147,13 @@ public class AppointmentControllerTest {
 
         verify(service).delete(any(), any());
         verifyNoMoreInteractions(service);
+    }
+
+    private MappingJackson2HttpMessageConverter customMappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+//        jsonConverter.getObjectMapper().registerModule(new JavaTimeModule());
+        jsonConverter.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        jsonConverter.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return jsonConverter;
     }
 }

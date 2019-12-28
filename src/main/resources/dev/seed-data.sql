@@ -9,3 +9,7 @@ insert into bb_account (created, status, business_name, business_type, owner_nam
 insert into bb_user_account (user_id, account_id) values (1, 1);
 insert into bb_user_account (user_id, account_id) values (2, 2);
 insert into bb_user_account (user_id, account_id) values (3, 3);
+
+insert into bb_settings (ACCOUNT_ID, KEY_, VAL_) values (1, 'timezone', 'US/Mountain');
+insert into bb_settings (ACCOUNT_ID, KEY_, VAL_) values (2, 'timezone', 'US/Eastern');
+insert into bb_settings (ACCOUNT_ID, KEY_, VAL_) values (3, 'timezone', 'US/Pacific');
